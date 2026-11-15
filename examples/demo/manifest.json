@@ -1,0 +1,13 @@
+{
+  "chromosomes": [
+    {
+      "name": "1",
+      "genotypes": "genotypes.vcf",
+      "annotations": "annotations.vcf"
+    }
+  ],
+  "populations": {
+    "ALL": "populations/ALL",
+    "EUR": "populations/EUR"
+  }
+}

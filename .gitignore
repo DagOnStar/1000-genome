@@ -211,6 +211,11 @@ tempCodeRunnerFile.py
 # PyPI configuration file
 .pypirc
 
+# DAGonStar local workflow state and results
+.dagon-scratch/
+output/
+dagon.ini
+
 # Marimo
 marimo/_static/
 marimo/_lsp/

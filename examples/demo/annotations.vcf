@@ -1,0 +1,6 @@
+##fileformat=VCFv4.2
+##INFO=<ID=CSQ,Number=.,Type=String,Description="VEP consequences including SIFT">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+1	100	rs100	A	G	.	PASS	CSQ=G|missense_variant|MODERATE|GENE1|deleterious(0.01)
+1	200	rs200	C	T	.	PASS	CSQ=T|missense_variant|MODERATE|GENE2|tolerated(0.20)
+1	300	rs300	G	A	.	PASS	CSQ=A|missense_variant|MODERATE|GENE3|deleterious(0.03)
