@@ -7,6 +7,7 @@ with DAGonStar.
 - [Input and output schemas](schemas.md): manifest, VCF assumptions, and result contracts.
 - [Evaluation](evaluation.md): test matrix, acceptance criteria, and remote execution.
 - [Evaluation results](evaluation-results.md): latest recorded E4 Batch/Slurm run.
+- [Scalability](scalability.md): fan-out benchmark, speedup, and efficiency methodology.
 
 The implementation is intentionally split between pure streaming algorithms in
 `genome_workflow/core.py` and DAG construction in `workflow.py`. This makes

@@ -46,3 +46,26 @@ fesrv.e4.cluster-20261115T211039Z/evaluation.json
 Result reports are intentionally not committed because they contain absolute
 host paths and runtime details. This page preserves the stable, reviewable
 summary.
+
+## Additional hosts — 2026-11-15
+
+The same unit, dry-run, Batch → Native → Web, and complete Batch workflow suite
+was executed on the two requested 24-logical-CPU hosts using Python 3.12.3.
+
+| Host | Address | Unit | Task types | Batch workflow | Duration |
+|---|---|---:|---:|---:|---:|
+| `sunbow` | `193.205.230.23` | passed | passed | passed | 9.714 s |
+| `rainbow` | `193.205.230.76` | passed | passed | passed | 11.001 s |
+
+Both produced the same fixture-result hashes as the earlier E4 Batch run. The
+Slurm partition on `rainbow` was occupied by an unrelated pending workload, so
+it was not used for the comparative speedup series; the E4 result above remains
+the real-Slurm validation.
+
+Docker CLI daemon checks succeeded on both hosts, but the live DAGonStar Docker
+task failed during client initialization (`docker_client2` was `None`). The
+failure is not reported as a workflow pass and was excluded from scalability
+timings. Batch, Native, Web, and scientific workflow tests passed independently.
+
+The associated 1/2/4/8 fan-out results and report locations are documented in
+[Scalability and speedup](scalability.md).

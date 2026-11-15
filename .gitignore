@@ -216,6 +216,8 @@ tempCodeRunnerFile.py
 output/
 dagon.ini
 evaluation/results/
+evaluation/scalability/
+scaling-fixture/
 
 # Marimo
 marimo/_static/

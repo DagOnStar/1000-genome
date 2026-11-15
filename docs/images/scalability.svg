@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="500" viewBox="0 0 1100 500" role="img" aria-labelledby="title desc">
+  <title id="title">DAGonStar workflow fan-out speedup</title>
+  <desc id="desc">Line chart of speedup at one, two, four, and eight extraction tasks on sunbow and rainbow.</desc>
+  <style>
+    .title{font:700 25px system-ui;fill:#0f172a}.sub{font:14px system-ui;fill:#475569}
+    .axis{stroke:#475569;stroke-width:2}.grid{stroke:#cbd5e1;stroke-width:1}
+    .tick{font:14px system-ui;fill:#475569}.legend{font:600 16px system-ui;fill:#0f172a}
+    .sun{stroke:#2563eb;fill:none;stroke-width:4}.rain{stroke:#16a34a;fill:none;stroke-width:4}
+  </style>
+  <rect width="1100" height="500" fill="#f8fafc"/>
+  <text x="45" y="42" class="title">Fan-out speedup · 12,000 variants × 400 samples</text>
+  <text x="45" y="68" class="sub">Three repeats per level · median end-to-end Batch time · all output hashes identical</text>
+  <line x1="120" y1="390" x2="1020" y2="390" class="axis"/><line x1="120" y1="100" x2="120" y2="390" class="axis"/>
+  <line x1="120" y1="390" x2="1020" y2="390" class="grid"/><line x1="120" y1="300" x2="1020" y2="300" class="grid"/>
+  <line x1="120" y1="210" x2="1020" y2="210" class="grid"/><line x1="120" y1="120" x2="1020" y2="120" class="grid"/>
+  <text x="65" y="395" class="tick">1.0×</text><text x="65" y="305" class="tick">1.1×</text><text x="65" y="215" class="tick">1.2×</text><text x="65" y="125" class="tick">1.3×</text>
+  <text x="190" y="420" class="tick">1 task</text><text x="425" y="420" class="tick">2 tasks</text>
+  <text x="660" y="420" class="tick">4 tasks</text><text x="895" y="420" class="tick">8 tasks</text>
+  <polyline points="215,390 450,339 685,312 920,300" class="sun"/>
+  <polyline points="215,390 450,305 685,217 920,188" class="rain"/>
+  <g fill="#2563eb"><circle cx="215" cy="390" r="7"/><circle cx="450" cy="339" r="7"/><circle cx="685" cy="312" r="7"/><circle cx="920" cy="300" r="7"/></g>
+  <g fill="#16a34a"><circle cx="215" cy="390" r="7"/><circle cx="450" cy="305" r="7"/><circle cx="685" cy="217" r="7"/><circle cx="920" cy="188" r="7"/></g>
+  <line x1="745" y1="92" x2="790" y2="92" class="sun"/><text x="805" y="98" class="legend">sunbow · 8-task 1.099×</text>
+  <line x1="745" y1="125" x2="790" y2="125" class="rain"/><text x="805" y="131" class="legend">rainbow · 8-task 1.224×</text>
+  <text x="45" y="475" class="sub">Fan-out is task count, not exclusive core count. Full-file rescanning and fixed stages limit parallel efficiency.</text>
+</svg>

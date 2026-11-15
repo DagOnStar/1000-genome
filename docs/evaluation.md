@@ -70,3 +70,22 @@ artifact.
 
 Never commit host-specific result reports: they may contain usernames, paths,
 and scheduler details.
+
+## Scalability and speedup
+
+Generate a deterministic scaling fixture and run repeated fan-out levels:
+
+```bash
+python evaluation/generate_scaling_fixture.py \
+  --output scaling-fixture --variants 12000 --samples 400
+
+python evaluation/scalability.py \
+  --config dagon.ini \
+  --fixture scaling-fixture \
+  --output evaluation/scalability \
+  --levels 1 2 4 8 \
+  --repeats 3
+```
+
+See [the scalability guide](scalability.md) for formulas, acceptance rules,
+limitations, and the recorded multi-host results.

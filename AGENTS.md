@@ -63,3 +63,11 @@ report. Keep the host, date, runtime versions, fixture scale, and limitations
 beside the numbers; never present fixture timings as production benchmarks.
 When results change, update `README.md`, `docs/evaluation-results.md`, and the
 performance chart together so they describe the same run.
+
+Scalability claims must use `evaluation/scalability.py`, at least three repeats
+per fan-out level, median wall time, and identical scientific output hashes.
+Record the baseline, speedup formula, efficiency, host CPU count, workload
+dimensions, and whether other benchmark processes overlapped. Update
+`docs/scalability.md` and its README table/chart together. Never call task
+fan-out a core count unless each task is explicitly allocated one exclusive
+core by the executor.

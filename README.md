@@ -15,7 +15,8 @@ The workflow is documented in detail under [`docs/`](docs/index.md):
 - [architecture and execution profiles](docs/architecture.md);
 - [input and output schemas](docs/schemas.md);
 - [test and evaluation methodology](docs/evaluation.md);
-- [latest E4 evaluation results](docs/evaluation-results.md).
+- [recorded multi-host evaluation results](docs/evaluation-results.md);
+- [scalability methodology and interpretation](docs/scalability.md).
 
 The `individuals` stage is a configurable fan-out. DAGonStar discovers all
 edges from the `workflow:///task/output` references in task commands and runs
@@ -143,6 +144,32 @@ populations, and 100 frequency runs—so they validate behavior and executor
 reproducibility, not production-scale throughput. Full environment details,
 hashes, limitations, and the remote report location are recorded in the
 [E4 evaluation results](docs/evaluation-results.md).
+
+### Scalability and speedup
+
+![DAGonStar fan-out speedup on sunbow and rainbow](docs/images/scalability.svg)
+
+The same deterministic 12,000-variant × 400-sample workload was run three
+times per fan-out level on two 24-logical-CPU hosts. Values are median
+end-to-end Batch workflow wall time; `S(n) = T(1) / T(n)`.
+
+| Host | Fan-out | Median time | Speedup | Efficiency |
+|---|---:|---:|---:|---:|
+| `sunbow` | 1 | 10.903 s | 1.000× | 100.0% |
+| `sunbow` | 2 | 10.322 s | 1.056× | 52.8% |
+| `sunbow` | 4 | 10.031 s | 1.087× | 27.2% |
+| `sunbow` | 8 | 9.917 s | 1.099× | 13.7% |
+| `rainbow` | 1 | 14.407 s | 1.000× | 100.0% |
+| `rainbow` | 2 | 13.163 s | 1.095× | 54.7% |
+| `rainbow` | 4 | 12.079 s | 1.193× | 29.8% |
+| `rainbow` | 8 | 11.767 s | 1.224× | 15.3% |
+
+All fan-out levels produced identical scientific-output hashes. Scaling is
+positive but sublinear because each `individuals` shard still scans and parses
+the complete VCF, while merge, analysis, publication, and DAG lifecycle costs
+remain fixed. Fan-out is a task count, not an exclusive CPU-core count. See
+[the scalability guide](docs/scalability.md) for the full protocol and
+limitations.
 
 Run the complete local evaluation:
 
