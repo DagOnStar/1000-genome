@@ -2,14 +2,20 @@
 
 A local, reproducible DAGonStar implementation of the classic
 [1000 Genomes mutational-overlap workflow](https://github.com/pegasus-isi/1000genome-workflow).
-It builds this graph for every chromosome and population:
 
-```text
-individuals-0 \
-individuals-1  +--> individuals-merge --+--> mutation-overlap --> publish
-...          /                           +--> frequency --------/
-annotations ---------> sifting ---------+
-```
+## Workflow graph
+
+The following graph is expanded independently for every chromosome and
+population in the manifest:
+
+![1000 Genomes DAGonStar workflow](docs/images/workflow.svg)
+
+The workflow is documented in detail under [`docs/`](docs/index.md):
+
+- [architecture and execution profiles](docs/architecture.md);
+- [input and output schemas](docs/schemas.md);
+- [test and evaluation methodology](docs/evaluation.md);
+- [latest E4 evaluation results](docs/evaluation-results.md).
 
 The `individuals` stage is a configurable fan-out. DAGonStar discovers all
 edges from the `workflow:///task/output` references in task commands and runs
@@ -86,15 +92,80 @@ Useful options:
 - `--dry-run` validates and prints the DAG without executing it.
 
 Input paths and the publication directory must be visible on the execution
-host. The current profile uses local `BATCH` tasks; the task graph and commands
+host. The default profile uses local `BATCH` tasks; the task graph and commands
 can be switched to another DAGonStar task backend without changing the data
 formats.
+
+## DAGonStar execution profiles
+
+The same graph supports local Batch tasks and current Slurm tasks:
+
+```bash
+# Local Batch tasks
+python workflow.py --manifest manifest.json --executor batch --output output
+
+# Slurm tasks with scheduler-aware pre-staging (enabled by default)
+python workflow.py --manifest manifest.json --executor slurm \
+  --partition debug --time 00:30:00 --memory-mb 4096 --output output
+```
+
+The Slurm profile uses DAGonStar's pre-staging feature to copy and verify
+`workflow://` inputs before allocating compute resources. Disable it only for a
+site-specific reason with `--no-pre-stage`.
+
+In addition to the scientific graph, the evaluation suite exercises modern
+DAGonStar task types with a credential-free Batch → Native → Web workflow and
+an optional real Docker task.
+
+## Evaluation
+
+![DAGonStar evaluation flow](docs/images/evaluation.svg)
+
+### Recorded performance
+
+![E4 evaluation duration chart](docs/images/performance.svg)
+
+The latest recorded evaluation ran on `fesrv.e4.cluster` on 2026-11-15 using
+Python 3.11.7, DAGonStar 2.9.4, Slurm 23.11.3, and the `debug` partition.
+
+| Scenario | DAGonStar task types | Result | Duration |
+|---|---|---:|---:|
+| Unit suite | pure Python | passed | 0.191 s |
+| DAG dry-run | graph construction | passed | 0.059 s |
+| Task-type smoke | Batch → Native → Web | passed | 9.652 s |
+| Complete local workflow | Batch | passed | 10.773 s |
+| Complete scheduled workflow | Slurm with pre-staging | passed | 19.867 s |
+
+Batch and Slurm produced byte-identical deterministic artifacts. The Slurm
+duration includes scheduler submission and allocation overhead. These timings
+use the tiny synthetic fixture—four individuals, three annotated variants, two
+populations, and 100 frequency runs—so they validate behavior and executor
+reproducibility, not production-scale throughput. Full environment details,
+hashes, limitations, and the remote report location are recorded in the
+[E4 evaluation results](docs/evaluation-results.md).
+
+Run the complete local evaluation:
+
+```bash
+python evaluation/run_suite.py --config dagon.ini
+```
+
+On a Slurm host:
+
+```bash
+python evaluation/run_suite.py --config /absolute/path/dagon.ini --partition debug
+```
+
+Add `--docker` when Docker daemon access is available. Reports include the
+environment, command, duration, bounded logs, expected-value checks, and output
+SHA-256 values. When Slurm is enabled, deterministic Batch and Slurm artifacts
+must be byte-identical. See [the evaluation guide](docs/evaluation.md).
 
 ## Development
 
 ```bash
 python -m unittest discover -s tests -v
-python -m compileall -q genome_workflow workflow.py
+python -m compileall -q genome_workflow evaluation workflow.py
 ```
 
 The task CLI can also be run directly with `python -m genome_workflow.tasks

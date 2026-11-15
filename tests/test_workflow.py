@@ -16,6 +16,13 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("chr1-individuals-0 -> chr1-individuals-merge", edges)
         self.assertIn("chr1-analysis[ALL] -> chr1-ALL-publish", edges)
 
+    def test_slurm_requires_partition(self) -> None:
+        with self.assertRaisesRegex(SystemExit, "partition is required"):
+            workflow.main([
+                "--manifest", str(ROOT / "examples" / "demo" / "manifest.json"),
+                "--executor", "slurm", "--dry-run",
+            ])
+
 
 if __name__ == "__main__":
     unittest.main()

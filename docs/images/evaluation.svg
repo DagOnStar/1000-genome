@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="420" viewBox="0 0 1100 420" role="img" aria-labelledby="title desc">
+  <title id="title">DAGonStar evaluation pipeline</title>
+  <desc id="desc">Tests feed Batch and Slurm executions whose artifacts are validated and compared by hash.</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker><style>.b{rx:12;stroke-width:2}.t{font:600 17px system-ui;fill:#0f172a}.s{font:14px system-ui;fill:#334155}.a{stroke:#475569;stroke-width:2.5;fill:none;marker-end:url(#arrow)}</style></defs>
+  <rect width="1100" height="420" fill="#f8fafc"/>
+  <text x="45" y="45" class="t" font-size="24">Evaluation evidence flow</text>
+  <rect class="b" x="45" y="95" width="220" height="70" fill="#e0e7ff" stroke="#4f46e5"/><text class="t" x="70" y="125">Unit + schema tests</text><text class="s" x="70" y="150">pure Python algorithms</text>
+  <rect class="b" x="45" y="220" width="220" height="70" fill="#fce7f3" stroke="#db2777"/><text class="t" x="70" y="250">Task-type smoke</text><text class="s" x="70" y="275">Batch · Native · Web · Docker</text>
+  <rect class="b" x="340" y="70" width="220" height="80" fill="#dbeafe" stroke="#2563eb"/><text class="t" x="370" y="105">Batch workflow</text><text class="s" x="370" y="132">local DAG execution</text>
+  <rect class="b" x="340" y="235" width="220" height="80" fill="#dcfce7" stroke="#16a34a"/><text class="t" x="370" y="270">Slurm workflow</text><text class="s" x="370" y="297">pre-stage + allocation</text>
+  <rect class="b" x="635" y="120" width="210" height="145" fill="#fef3c7" stroke="#d97706"/><text class="t" x="665" y="155">Acceptance checks</text><text class="s" x="665" y="185">• expected counts</text><text class="s" x="665" y="210">• non-empty artifacts</text><text class="s" x="665" y="235">• SHA-256 equality</text>
+  <rect class="b" x="915" y="150" width="150" height="90" fill="#e2e8f0" stroke="#475569"/><text class="t" x="940" y="185">JSON report</text><text class="s" x="940" y="212">timed evidence</text>
+  <path class="a" d="M265 125 L340 110"/><path class="a" d="M265 255 L340 275"/><path class="a" d="M560 110 L635 160"/><path class="a" d="M560 275 L635 225"/><path class="a" d="M845 192 L915 192"/>
+  <text class="s" x="350" y="365">Same manifest · same seed · same scientific output contract</text>
+</svg>

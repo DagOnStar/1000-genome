@@ -215,6 +215,7 @@ tempCodeRunnerFile.py
 .dagon-scratch/
 output/
 dagon.ini
+evaluation/results/
 
 # Marimo
 marimo/_static/

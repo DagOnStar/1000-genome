@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="500" viewBox="0 0 1100 500" role="img" aria-labelledby="title desc">
+  <title id="title">1000 Genomes DAGonStar workflow</title>
+  <desc id="desc">Genotype chunks merge, annotations are sifted, and both branches feed overlap and frequency analysis before publication.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+    <style>.box{rx:12;stroke-width:2}.t{font:600 17px system-ui;fill:#0f172a}.s{font:14px system-ui;fill:#334155}.a{stroke:#475569;stroke-width:2.5;fill:none;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1100" height="500" fill="#f8fafc"/>
+  <text x="45" y="45" class="t" font-size="24">1000 Genomes · one chromosome branch</text>
+  <rect class="box" x="45" y="90" width="190" height="70" fill="#dbeafe" stroke="#2563eb"/>
+  <text class="t" x="70" y="120">Genotype VCF</text><text class="s" x="70" y="145">read-only input</text>
+  <rect class="box" x="45" y="330" width="190" height="70" fill="#ede9fe" stroke="#7c3aed"/>
+  <text class="t" x="70" y="360">Annotation VCF</text><text class="s" x="70" y="385">VEP SIFT text</text>
+  <rect class="box" x="300" y="70" width="205" height="50" fill="#bfdbfe" stroke="#2563eb"/>
+  <rect class="box" x="300" y="135" width="205" height="50" fill="#bfdbfe" stroke="#2563eb"/>
+  <rect class="box" x="300" y="200" width="205" height="50" fill="#bfdbfe" stroke="#2563eb"/>
+  <text class="t" x="325" y="102">individuals · 0</text><text class="t" x="325" y="167">individuals · 1</text><text class="t" x="325" y="232">individuals · N</text>
+  <rect class="box" x="565" y="120" width="190" height="75" fill="#bae6fd" stroke="#0284c7"/>
+  <text class="t" x="590" y="150">individuals merge</text><text class="s" x="590" y="176">sample → variants</text>
+  <rect class="box" x="300" y="340" width="205" height="70" fill="#ddd6fe" stroke="#7c3aed"/>
+  <text class="t" x="325" y="370">SIFT extraction</text><text class="s" x="325" y="395">rs ID → score</text>
+  <rect class="box" x="815" y="80" width="230" height="75" fill="#dcfce7" stroke="#16a34a"/>
+  <text class="t" x="840" y="110">mutation overlap</text><text class="s" x="840" y="136">deleterious pairs / population</text>
+  <rect class="box" x="815" y="220" width="230" height="75" fill="#fef3c7" stroke="#d97706"/>
+  <text class="t" x="840" y="250">frequency</text><text class="s" x="840" y="276">seeded null distribution</text>
+  <rect class="box" x="815" y="360" width="230" height="75" fill="#e2e8f0" stroke="#475569"/>
+  <text class="t" x="840" y="390">publish</text><text class="s" x="840" y="416">CSV + JSON + summary</text>
+  <path class="a" d="M235 125 L300 95"/><path class="a" d="M235 125 L300 160"/><path class="a" d="M235 125 L300 225"/>
+  <path class="a" d="M505 95 L565 145"/><path class="a" d="M505 160 L565 157"/><path class="a" d="M505 225 L565 170"/>
+  <path class="a" d="M235 365 L300 375"/><path class="a" d="M755 145 L815 118"/><path class="a" d="M505 375 C680 375 670 145 815 125"/>
+  <path class="a" d="M755 170 C780 190 790 235 815 250"/><path class="a" d="M1045 118 C1080 160 1080 335 1045 385"/><path class="a" d="M1045 258 C1070 290 1070 350 1045 393"/>
+</svg>

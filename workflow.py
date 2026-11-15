@@ -26,6 +26,14 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--max-individuals", type=int, default=0)
     result.add_argument("--genotype-mode", choices=("carrier", "homozygous-alt"), default="carrier")
     result.add_argument("--config", type=Path, default=Path("dagon.ini"))
+    result.add_argument("--executor", choices=("batch", "slurm"), default="batch")
+    result.add_argument("--partition", default=None, help="Slurm partition (required with --executor slurm)")
+    result.add_argument("--time", default="00:10:00", help="Slurm task time limit")
+    result.add_argument("--memory-mb", type=int, default=1024, help="Slurm memory per task")
+    result.add_argument(
+        "--pre-stage", action=argparse.BooleanOptionalAction, default=True,
+        help="stage workflow inputs before Slurm allocation (default: enabled)",
+    )
     result.add_argument("--dry-run", action="store_true")
     return result
 
@@ -86,8 +94,19 @@ def build_workflow(data: dict[str, Any], args: argparse.Namespace):
     from dagon.task import DagonTask, TaskType
 
     config = args.config.resolve() if args.config.is_file() else ROOT / "dagon.ini.sample"
-    workflow = Workflow("1000-genomes", config_file=str(config))
+    workflow = Workflow("1000-genomes", config_file=str(config), pre_stage=args.pre_stage if args.executor == "slurm" else False)
     output_dir = args.output.resolve()
+
+    def add(name: str, command: str) -> None:
+        if args.executor == "slurm":
+            task = DagonTask(
+                TaskType.SLURM, name, command, partition=args.partition, time=args.time,
+                memory=args.memory_mb, ntasks=1, pre_stage=args.pre_stage,
+            )
+        else:
+            task = DagonTask(TaskType.BATCH, name, command)
+        workflow.add_task(task)
+
     for chromosome in data["chromosomes"]:
         chrom = str(chromosome["name"])
         chunk_tasks: list[str] = []
@@ -99,19 +118,19 @@ def build_workflow(data: dict[str, Any], args: argparse.Namespace):
                 "--chunk-index", index, "--chunk-count", args.individual_jobs,
                 "--genotype-mode", args.genotype_mode,
             )
-            workflow.add_task(DagonTask(TaskType.BATCH, name, command))
+            add(name, command)
 
         merge_name = f"chr{chrom}-individuals-merge"
         merge_args: list[object] = ["merge"]
         for name in chunk_tasks:
             merge_args.extend(("--input", reference(name, "individuals.json")))
         merge_args.extend(("--output", "individuals.json"))
-        workflow.add_task(DagonTask(TaskType.BATCH, merge_name, task_command(*merge_args)))
+        add(merge_name, task_command(*merge_args))
 
         sift_name = f"chr{chrom}-sifting"
-        workflow.add_task(DagonTask(TaskType.BATCH, sift_name, task_command(
+        add(sift_name, task_command(
             "sift", "--vcf", chromosome["annotations"], "--output", "sift.json"
-        )))
+        ))
 
         for population, population_path in data["populations"].items():
             stem = f"chr{chrom}-{population}"
@@ -121,19 +140,19 @@ def build_workflow(data: dict[str, Any], args: argparse.Namespace):
                 "--individuals", reference(merge_name, "individuals.json"),
                 "--population", population_path, "--max-individuals", args.max_individuals,
             )
-            workflow.add_task(DagonTask(TaskType.BATCH, overlap_name, task_command(
+            add(overlap_name, task_command(
                 "overlap", *common, "--sift", reference(sift_name, "sift.json"), "--output", "overlap.csv"
-            )))
-            workflow.add_task(DagonTask(TaskType.BATCH, frequency_name, task_command(
+            ))
+            add(frequency_name, task_command(
                 "frequency", *common, "--runs", args.frequency_runs, "--seed", args.seed,
                 "--output", "frequency.json"
-            )))
+            ))
             publish_name = f"{stem}-publish"
-            workflow.add_task(DagonTask(TaskType.BATCH, publish_name, task_command(
+            add(publish_name, task_command(
                 "publish", "--overlap", reference(overlap_name, "overlap.csv"),
                 "--frequency", reference(frequency_name, "frequency.json"),
                 "--output-dir", output_dir, "--prefix", f"chr{chrom}.{population}",
-            )))
+            ))
     workflow.make_dependencies()
     return workflow
 
@@ -142,6 +161,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     if args.individual_jobs < 1 or args.frequency_runs < 1 or args.max_individuals < 0:
         raise SystemExit("job and run counts must be positive; max-individuals cannot be negative")
+    if args.executor == "slurm" and not args.partition:
+        raise SystemExit("--partition is required with --executor slurm")
+    if args.memory_mb < 1:
+        raise SystemExit("--memory-mb must be positive")
     try:
         data = load_manifest(args.manifest)
     except (OSError, ValueError, json.JSONDecodeError) as error:
